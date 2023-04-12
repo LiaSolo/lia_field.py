@@ -12,22 +12,26 @@ class Field:
         p = self.prost
         n = self.stepen
 
-        d = p**n - 2
-        result = elem
-        for i in range(1, d):
-            result = self.multi(result, elem)
+        if not self.is_norm_elem(elem) or sum(elem) == 0:
+            print('пошел ты с такими элементами...')
+        else:
+            d = p ** n - 2
+            result = elem
+            for i in range(1, d):
+                result = self.multi(result, elem)
 
-        return result
+            return result
 
-    def is_norm_elem(self, elem1):
+    def is_norm_elem(self, elem):
         p = self.prost
         n = self.stepen
 
         flag = True
-        for e in elem1:
+        for e in elem:
             if e >= p:
                 flag = False
-        if len(elem1) != n:
+                break
+        if len(elem) != n:
             flag = False
         return flag
 
@@ -47,14 +51,11 @@ class Field:
     def minus(self, elem1, elem2):
         p = self.prost
         n = self.stepen
+
         if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
             print('пошел ты с такими элементами...')
         else:
-            sum_elem = list()
-            for i in range(0, n):
-                sum_elem.append((elem1[i] + self.protiv(elem2[i])) % p)
-
-            return sum_elem
+            return self.plus(elem1, self.protiv(elem2))
 
     def protiv(self, elem):
         p = self.prost
@@ -91,7 +92,10 @@ class Field:
             return result
 
     def div(self, delimoe, delitel):
-        return self.multi(delimoe, self.obrat(delitel))
+        if not (self.is_norm_elem(delimoe) and self.is_norm_elem(delitel)):
+            print('пошел ты с такими элементами...')
+        else:
+            return self.multi(delimoe, self.obrat(delitel))
 
     def zero(self):
         n = self.stepen
@@ -100,3 +104,21 @@ class Field:
     def one(self):
         n = self.stepen
         return [1] + [0 for i in range(0, n - 1)]
+
+    def binary_field_to_bytes(self, elem):
+        p = self.prost
+        n = self.stepen
+
+        if p != 2:
+            print('пошел ты с такими элементами...')
+        else:
+            return bytes(elem)
+
+    def binary_field_from_bytes(self, byte_seq):
+        p = self.prost
+        n = self.stepen
+
+        if p != 2:
+            print('пошел ты с такими элементами...')
+        else:
+            return list(byte_seq)
