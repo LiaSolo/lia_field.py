@@ -69,7 +69,7 @@ class Simple_field:
             copy_delitel = [0]*(deg1 - deg2) + delitel
 
             c = sf.div_elem(delimoe[deg1], copy_delitel[deg1])
-            v = [(i * c) % p  for i in copy_delitel]
+            v = [(i * c) % p for i in copy_delitel]
 
             delimoe = [sf.minus(delimoe[i], v[i]) for i in range(0, deg1 + 1)]
             delimoe.pop()

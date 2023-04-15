@@ -245,9 +245,19 @@ class Simple_fields_tester(unittest.TestCase):
         res = f.div_elem(delimoe, delitel)
         self.assertEqual(res, 5, 'oops in simple_field_test_div_elem_1')
 
-    # def test_div_poly_1(self):
-    #
-    # def test_div_poly_2(self):
+    def test_div_poly_1(self):
+        delimoe = [1, 9, 6, 5, 3, 8, 12]
+        delitel = [4, 1, 0, 1]
+
+        res = Simple_field.div_poly(delimoe, delitel, 13)
+        self.assertEqual(res, [10, 5, 9], 'oops in simple_field_test_div_poly_1')
+
+    def test_div_poly_2(self):
+        delimoe = [1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1]
+        delitel = [1, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+
+        res = Simple_field.div_poly(delimoe, delitel, 2)
+        self.assertEqual(res, [1, 1, 0, 1, 1, 0, 1, 1, 0], 'oops in simple_field_test_div_poly_2')
 
     def test_is_norm_1(self):
         f = Simple_field(17)
