@@ -1,30 +1,30 @@
-from simple_field import Simple_field
+from simple_field import SimpleField
 
 
 class Field:
 
-    def __init__(self, prost, factor, stepen):
-        self.prost = prost
-        self.factor = factor
-        self.stepen = stepen
+    def __init__(self, simple_number, factor_polynom, degree):
+        self.simple_number = simple_number
+        self.factor_polynom = factor_polynom
+        self.degree = degree
 
-    def obrat(self, elem):
-        p = self.prost
-        n = self.stepen
+    def opposite_multiplication(self, elem):
+        p = self.simple_number
+        n = self.degree
 
         if not self.is_norm_elem(elem) or sum(elem) == 0:
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
             d = p ** n - 2
             result = elem
             for i in range(1, d):
-                result = self.multi(result, elem)
+                result = self.multiplication(result, elem)
 
             return result
 
     def is_norm_elem(self, elem):
-        p = self.prost
-        n = self.stepen
+        p = self.simple_number
+        n = self.degree
 
         flag = True
         for e in elem:
@@ -35,90 +35,85 @@ class Field:
             flag = False
         return flag
 
-    def plus(self, elem1, elem2):
-        p = self.prost
-        n = self.stepen
+    def addition(self, elem1, elem2):
+        p = self.simple_number
+        n = self.degree
 
         if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
-            sum_elem = list()
+            answer = list()
             for i in range(0, n):
-                sum_elem.append((elem1[i] + elem2[i]) % p)
+                answer.append((elem1[i] + elem2[i]) % p)
 
-            return sum_elem
+            return answer
 
-    def minus(self, elem1, elem2):
-        p = self.prost
-        n = self.stepen
-
-        if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
-            print('пошел ты с такими элементами...')
+    def subtraction(self, minuend, subtrahend):
+        if not (self.is_norm_elem(minuend) and self.is_norm_elem(subtrahend)):
+            raise Exception("Wrong element(s)!!!")
         else:
-            return self.plus(elem1, self.protiv(elem2))
+            return self.addition(minuend, self.opposite_addition(subtrahend))
 
-    def protiv(self, elem):
-        p = self.prost
-        n = self.stepen
+    def opposite_addition(self, elem):
+        p = self.simple_number
+        n = self.degree
 
         if not self.is_norm_elem(elem):
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
-            protiv_elem = list()
+            answer = list()
             for i in range(0, n):
                 if elem[i] == 0:
-                    protiv_elem.append(0)
+                    answer.append(0)
                 else:
-                    protiv_elem.append(p - elem[i])
-            return protiv_elem
+                    answer.append(p - elem[i])
+            return answer
 
-    def multi(self, elem1, elem2):
-        p = self.prost
-        q = self.factor
+    def multiplication(self, elem1, elem2):
+        p = self.simple_number
+        q = self.factor_polynom
 
         if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
             deg1 = len(elem1) - 1
             deg2 = len(elem2) - 1
-            mult_elem = [0 for i in range(0, deg1 + deg2 + 1)]
+            answer = [0 for _ in range(0, deg1 + deg2 + 1)]
 
             for x in range(0, deg1 + 1):
                 for y in range(0, deg2 + 1):
-                    mult_elem[x + y] += elem1[x] * elem2[y]
+                    answer[x + y] += elem1[x] * elem2[y]
 
-            mult_elem = [i % p for i in mult_elem]
-            result = Simple_field.div_poly(mult_elem, q, p)
+            answer = [i % p for i in answer]
+            result = SimpleField.division_modulo(answer, q, p)
             return result
 
-    def div(self, delimoe, delitel):
-        if not (self.is_norm_elem(delimoe) and self.is_norm_elem(delitel)):
-            print('пошел ты с такими элементами...')
+    def division(self, dividend, divisor):
+        if not (self.is_norm_elem(dividend) and self.is_norm_elem(divisor)):
+            raise Exception("Wrong element(s)!!!")
         else:
-            return self.multi(delimoe, self.obrat(delitel))
+            return self.multiplication(dividend, self.opposite_multiplication(divisor))
 
     def zero(self):
-        n = self.stepen
-        return [0 for i in range(0, n)]
+        n = self.degree
+        return [0 for _ in range(0, n)]
 
     def one(self):
-        n = self.stepen
-        return [1] + [0 for i in range(0, n - 1)]
+        n = self.degree
+        return [1] + [0 for _ in range(0, n - 1)]
 
     def binary_field_to_bytes(self, elem):
-        p = self.prost
-        n = self.stepen
+        p = self.simple_number
 
         if p != 2:
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
             return bytes(elem)
 
     def binary_field_from_bytes(self, byte_seq):
-        p = self.prost
-        n = self.stepen
+        p = self.simple_number
 
         if p != 2:
-            print('пошел ты с такими элементами...')
+            raise Exception("Wrong element(s)!!!")
         else:
             return list(byte_seq)
