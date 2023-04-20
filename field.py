@@ -1,29 +1,38 @@
-from simple_field import SimpleField
+from simple_field import PrimeField
 
 
 class Field:
 
-    def __init__(self, simple_number, factor_polynom, degree):
-        self.simple_number = simple_number
+    def __init__(self, prime_number, factor_polynom):
+        self.prime_number = prime_number
         self.factor_polynom = factor_polynom
-        self.degree = degree
+        self.degree = len(factor_polynom) - 1
+
+    def fast_power(self, base, exp):
+        if exp == 0:
+            return self.one()
+        temp = self.fast_power(base, int(exp / 2))
+        temp = self.multiplication(temp, temp)
+
+        if exp % 2 == 0:
+            return temp
+        else:
+            return self.multiplication(base, temp)
 
     def opposite_multiplication(self, elem):
-        p = self.simple_number
+        p = self.prime_number
         n = self.degree
 
         if not self.is_norm_elem(elem) or sum(elem) == 0:
-            raise Exception("Wrong element(s)!!!")
+            raise Exception("Wrong element(s)!!!💔")
         else:
-            d = p ** n - 2
-            result = elem
-            for i in range(1, d):
-                result = self.multiplication(result, elem)
+            d = pow(p, n) - 2
+            result = self.fast_power(elem, d)
 
             return result
 
     def is_norm_elem(self, elem):
-        p = self.simple_number
+        p = self.prime_number
         n = self.degree
 
         flag = True
@@ -36,7 +45,7 @@ class Field:
         return flag
 
     def addition(self, elem1, elem2):
-        p = self.simple_number
+        p = self.prime_number
         n = self.degree
 
         if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
@@ -55,7 +64,7 @@ class Field:
             return self.addition(minuend, self.opposite_addition(subtrahend))
 
     def opposite_addition(self, elem):
-        p = self.simple_number
+        p = self.prime_number
         n = self.degree
 
         if not self.is_norm_elem(elem):
@@ -70,11 +79,11 @@ class Field:
             return answer
 
     def multiplication(self, elem1, elem2):
-        p = self.simple_number
+        p = self.prime_number
         q = self.factor_polynom
 
         if not (self.is_norm_elem(elem1) and self.is_norm_elem(elem2)):
-            raise Exception("Wrong element(s)!!!")
+            raise Exception("Wrong element(s)!!!💔")
         else:
             deg1 = len(elem1) - 1
             deg2 = len(elem2) - 1
@@ -85,12 +94,12 @@ class Field:
                     answer[x + y] += elem1[x] * elem2[y]
 
             answer = [i % p for i in answer]
-            result = SimpleField.division_modulo(answer, q, p)
+            result = PrimeField.division_poly(answer, q, p)
             return result
 
     def division(self, dividend, divisor):
         if not (self.is_norm_elem(dividend) and self.is_norm_elem(divisor)):
-            raise Exception("Wrong element(s)!!!")
+            raise Exception("Wrong element(s)!!!💔")
         else:
             return self.multiplication(dividend, self.opposite_multiplication(divisor))
 
@@ -103,17 +112,46 @@ class Field:
         return [1] + [0 for _ in range(0, n - 1)]
 
     def binary_field_to_bytes(self, elem):
-        p = self.simple_number
+        p = self.prime_number
 
         if p != 2:
-            raise Exception("Wrong element(s)!!!")
+            raise Exception("Wrong element(s)!!!💔")
         else:
-            return bytes(elem)
+            number = self.from_elem_to_int(elem)
+            byte_number = number.to_bytes(1)
+            return byte_number
 
-    def binary_field_from_bytes(self, byte_seq):
-        p = self.simple_number
+    def binary_field_from_bytes(self, byte_number):
+        p = self.prime_number
 
         if p != 2:
-            raise Exception("Wrong element(s)!!!")
+            raise Exception("Wrong element(s)!!!💔")
         else:
-            return list(byte_seq)
+            number = int.from_bytes(byte_number)
+            return self.from_int_to_elem(number)
+
+    def from_elem_to_int(self, elem):
+        p = self.prime_number
+        l = len(elem)
+        number = 0
+        coef = 1
+        for i in range(0, l):
+            number += elem[i] * coef
+            coef *= p
+
+        return number
+
+    def from_int_to_elem(self, number):
+        p = self.prime_number
+        d = self.degree
+        elem = list()
+        while number // p > 0:
+            elem.append(number % p)
+            number //= p
+
+        elem.append(number % p)
+        while len(elem) < d:
+            elem.append(0)
+        while len(elem) > d:
+            elem.pop()
+        return elem
