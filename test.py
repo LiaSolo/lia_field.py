@@ -1,12 +1,10 @@
 import unittest
 from field import Field
 from simple_field import PrimeField
+from main import RandomGenerator
 
 
 class FieldsTester(unittest.TestCase):
-
-    # name = main
-
     def test_addition_1(self):
         f = Field(2, [1, 1, 1])
         elem1 = [0, 1]
@@ -331,5 +329,50 @@ class PrimeFieldsTester(unittest.TestCase):
     if __name__ == '__main__':
         unittest.main()
 
+
+class RandomGeneratorTester(unittest.TestCase):
+
+    def test_1(self):
+        a = [[1] + [0] * 7, [0, 1] + [0] * 6]
+        c = [0, 0, 1] + [0] * 5
+        g = RandomGenerator(a, c)
+
+        res = [g.generator() for _ in range(0, 5)]
+        self.assertEqual(res, [b'\x00', b'\x00', b'\x04', b'\x0c', b'\x18'], 'oops in test_random_1')
+
+    def test_2(self):
+        a = [[0] * 8] * 5
+        c = [0] * 8
+        g = RandomGenerator(a, c)
+
+        res = [g.generator() for _ in range(0, 15)]
+        self.assertEqual(res, [b'\x00'] * 15, 'oops in test_random_2')
+
+    def test_3(self):
+        a = [[1] + [0] * 7] * 3
+        c = [1] * 8
+        g = RandomGenerator(a, c)
+
+        res = [g.generator() for _ in range(0, 8)]
+        self.assertEqual(res, [b'\x00', b'\x00', b'\x00', b'\xff', b'\x00', b'\x00', b'\x00', b'\xff'], 'oops in test_random_3')
+
+    def test_4(self):
+        a = [[1] + [0] * 7] * 5
+        c = [1] + [0] * 7
+        g = RandomGenerator(a, c)
+
+        res = [g.generator() for _ in range(0, 7)]
+        self.assertEqual(res, [b'\x00', b'\x00', b'\x00', b'\x00', b'\x00', b'\x01', b'\x00'], 'oops in test_random_4')
+
+    def test_5(self):
+        a = [[1] + [0] * 7] * 7
+        c = [0] * 8
+        g = RandomGenerator(a, c)
+
+        res = [g.generator() for _ in range(0, 25)]
+        self.assertEqual(res, [b'\x00'] * 25, 'oops in test_random_5')
+
+    if __name__ == '__main__':
+        unittest.main()
 
 
