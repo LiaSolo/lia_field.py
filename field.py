@@ -132,10 +132,10 @@ class Field:
 
     def from_elem_to_int(self, elem):
         p = self.prime_number
-        l = len(elem)
+        length = len(elem)
         number = 0
         coef = 1
-        for i in range(0, l):
+        for i in range(0, length):
             number += elem[i] * coef
             coef *= p
 

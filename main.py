@@ -23,5 +23,3 @@ class RandomGenerator:
         answer = x.pop(0)
         x += [result]
         return f.binary_field_to_bytes(answer)
-
-
