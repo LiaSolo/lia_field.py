@@ -77,4 +77,3 @@ class PrimeField:
             deg1 = len(dividend) - 1
 
         return dividend
-
