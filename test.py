@@ -237,9 +237,6 @@ class FieldsTester(unittest.TestCase):
         res = f.binary_field_from_bytes(byte_number)
         self.assertEqual(res, [1, 0, 1, 1, 0, 0, 0, 0], 'oops in test_from_bytes_2')
 
-    if __name__ == '__main__':
-        unittest.main()
-
 
 class PrimeFieldsTester(unittest.TestCase):
 
@@ -326,9 +323,6 @@ class PrimeFieldsTester(unittest.TestCase):
         res = f.is_norm_elem(elem)
         self.assertEqual(res, False, 'oops in prime_field_test_is_norm_1')
 
-    if __name__ == '__main__':
-        unittest.main()
-
 
 class RandomGeneratorTester(unittest.TestCase):
 
@@ -372,7 +366,8 @@ class RandomGeneratorTester(unittest.TestCase):
         res = [g.generator() for _ in range(0, 25)]
         self.assertEqual(res, [b'\x00'] * 25, 'oops in test_random_5')
 
-    if __name__ == '__main__':
-        unittest.main()
+
+if __name__ == '__main__':
+    unittest.main()
 
 
